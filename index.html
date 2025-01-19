@@ -66,34 +66,67 @@
       </select>
     </div>
     <h2 id="calculation">Расчет суммы страхования</h2>
-    <div>
-      <label for="mortgageCreditSum">Сумма ипотечного кредита</label>
-      <input type="number" id="mortgageCreditSum" name="mortgageCreditSum" required>
-    </div>
-   <div id="insurance-calculator">
-  <h2>Калькулятор расчета страховой суммы</h2>
-  <div>
-    <label for="remaining-mortgage-sum">Оставшаяся сумма кредита</label>
-    <input type="number" id="remaining-mortgage-sum">
-  </div>
-  <div>
-    <label for="term-repayment">Срок погашения кредита</label>
-    <input type="number" id="term-repayment">
-  </div>
-  <div>
-    <button type="button" id="calculate-button">Рассчитать</button>
-  </div>
-  <div id="insurance-sum-result"></div>
-</div>
-        </ul>
-      </ul>
-    </div>
-    <div>
-      <button type="submit" id="submit-button">Подпись</button>
-    </div>
-  </form>
-  <div id="results"></div>
+    <!DOCTYPE html>
+<html>
+<head>
+  <title>Калькулятор страховой суммы</title>
+</head>
+<body>
+  <h1>Калькулятор страховой суммы</h1>
+  <form>
+    <label for="credit_balance">Остаток кредита:</label>
+    <input type="number" id="credit_balance" min="0" required>
 
-  <script src="script.js"></script>
+    <label for="loan_term">Срок погашения кредита:</label>
+    <input type="number" id="loan_term" min="0" required>
+
+    <input type="submit" value="Рассчитать">
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      document.querySelector("form").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        // Получаем значения из формы
+        var creditBalance = parseFloat(document.querySelector("#credit_balance").value);
+        var loanTerm = parseInt(document.querySelector("#loan_term").value);
+
+        // Рассчитываем коэффициенты
+        var creditBalanceCoefficient;
+        if (creditBalance <= 1000000) {
+          creditBalanceCoefficient = 0.9;
+        } else if (creditBalance <= 2000000) {
+          creditBalanceCoefficient = 1;
+        } else if (creditBalance <= 4000000) {
+          creditBalanceCoefficient = 1.2;
+        } else {
+          creditBalanceCoefficient = 1.4;
+        }
+
+        var loanTermCoefficient;
+        if (loanTerm <= 5) {
+          loanTermCoefficient = 0.9;
+        } else if (loanTerm <= 8) {
+          loanTermCoefficient = 1;
+        } else if (loanTerm <= 15) {
+          loanTermCoefficient = 1.2;
+        } else if (loanTerm <= 20) {
+          loanTermCoefficient = 1.4;
+        } else {
+          loanTermCoefficient = 1.5;
+        }
+
+        // Рассчитываем страховую сумму
+        var insurancePremium = creditBalance * 0.01 * creditBalanceCoefficient * loanTermCoefficient;
+
+        // Выводим результат
+        document.querySelector("#result").innerHTML = "Страховая премия: " + insurancePremium.toFixed(2) + " рублей";
+      });
+    });
+  </script>
 </body>
 </html>
+
